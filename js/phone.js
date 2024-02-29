@@ -1,25 +1,27 @@
-const lodePhone = async (phone1) => {
+const lodePhone = async (phone1='13', allShow) => {
     const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${phone1}`);
     const data = await res.json();
     const phone = data.data
-    displyPhone(phone);
+    displyPhone(phone, allShow);
 }
 
-const displyPhone = phones => {
+const displyPhone = (phones, allShow) => {
     const phoneContainer = document.getElementById('phone-container')
 
     phoneContainer.textContent ="";
     //  show button
        
      const showAll = document.getElementById('show-all');
-     if(phones.length > 15){
+     if(phones.length > 15 && !allShow){
         showAll.classList.remove('hidden')
       
      }
      else{
         showAll.classList.add('hidden')
      }
-     phones = phones.slice(0,15);
+     if(!allShow){
+        phones = phones.slice(0,15);
+     };
      
     phones.forEach(phone => {
         console.log(phone);
@@ -33,8 +35,9 @@ const displyPhone = phones => {
                     <div class="card-body">
                       <h2 class="card-title">${phone.phone_name}</h2>
                       <p>If a dog chews shoes whose shoes does he choose?</p>
-                      <div class="card-actions justify-end">
-                        <button class="btn btn-primary">Buy Now</button>
+                      <div class="card-actions justify-center">
+                        <button onclick="showDetail('${phone.slug}'),
+                        my_modal_1.showModal()" class="btn btn-primary">SHOW DETAILS</button>
                       </div>
                     </div>
                   </div>`;
@@ -43,14 +46,16 @@ const displyPhone = phones => {
     });
 }
 
+
+
 // search handle
 
-const searchHandle = () =>{
+const searchHandle = (allShow) =>{
     loddingSpiner(true)
    const inputFild = document.getElementById('input-filed');
    const inputText = inputFild.value;
-   console.log(inputText)
-   lodePhone(inputText);
+   console.log(inputText,)
+   lodePhone(inputText,allShow);
    
 }
 
@@ -65,6 +70,28 @@ const loddingSpiner = (isloding)=>{
     
     
 }
+ const showAllBtn = () => {
+    searchHandle(true);
 
+ }
+
+ const showDetail =async (id) =>  {
+    console.log(id);
+    const res = await fetch(` https://openapi.programming-hero.com/api/phone/ ${id}`);
+    const data = await res.json();
+    console.log(data);
+    const phone = data.data
+    showPhoneDetail(phone)
+  }
+
+ const showPhoneDetail = (phone) => {
+    console.log(phone)
+  const showDetail = document.getElementById('show-detail');
+  showDetail.innerText = phone.brand
+  
+ }
+
+ lodePhone()
+ 
 
 
